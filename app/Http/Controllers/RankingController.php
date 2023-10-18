@@ -10,7 +10,9 @@ class RankingController extends BaseController
 {
     public function index()
     {
-        $ranking = DB::table('ranking')->latest('medals')->get();
+        $ranking = Cache::remember('latest_ranking', 300, function () {
+            return DB::table('ranking')->latest('medals')->get();
+        });
 
         return response()->json(['data' => $ranking]);
     }
